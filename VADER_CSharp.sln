@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VADER_CSharp", "VADER_CSharp\VADER_CSharp.csproj", "{03CCD826-0967-4EA7-BA68-BCDC6CCE71C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject1", "UnitTestProject1\UnitTestProject1.csproj", "{17C6A41C-39D3-449D-A568-90CAB2AA5308}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{03CCD826-0967-4EA7-BA68-BCDC6CCE71C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03CCD826-0967-4EA7-BA68-BCDC6CCE71C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03CCD826-0967-4EA7-BA68-BCDC6CCE71C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03CCD826-0967-4EA7-BA68-BCDC6CCE71C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17C6A41C-39D3-449D-A568-90CAB2AA5308}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17C6A41C-39D3-449D-A568-90CAB2AA5308}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17C6A41C-39D3-449D-A568-90CAB2AA5308}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17C6A41C-39D3-449D-A568-90CAB2AA5308}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
