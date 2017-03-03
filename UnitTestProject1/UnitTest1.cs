@@ -10,8 +10,11 @@ namespace UnitTestProject1
         [TestMethod]
         public void TestMethod1()
         {
-
-            var test = Utils.getWordValenceDictionary("./vader_sentiment_lexicon.txt");
+            System.Collections.ArrayList al = Utils.NEGATIVE_WORDS;
+            System.Collections.ArrayList nl = new System.Collections.ArrayList();
+            
+            //SentimentAnalyzer sa =new SentimentAnalyzer("this is a test");
+            //sa.analyse();
 
         }
     }

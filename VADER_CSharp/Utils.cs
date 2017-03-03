@@ -14,9 +14,20 @@ namespace VADER_CSharp
         private static String[] PUNCTUATION_LIST_array = {
             ".", "!", "?", ",", ";", ":", "-", "'", "\"", "!!", "!!!", "??", "???", "?!?", "!?!", "?!?!", "!?!?"
         };
+
+        private static String[] NEGATIVE_WORDS_array = {"aint", "arent", "cannot", "cant", "couldnt", "darent",
+            "didnt", "doesnt", "ain't", "aren't", "can't", "couldn't", "daren't", "didn't", "doesn't",
+            "dont", "hadnt", "hasnt", "havent", "isnt", "mightnt", "mustnt", "neither",
+            "don't", "hadn't", "hasn't", "haven't", "isn't", "mightn't", "mustn't",
+            "neednt", "needn't", "never", "none", "nope", "nor", "not", "nothing", "nowhere",
+            "oughtnt", "shant", "shouldnt", "uhuh", "wasnt", "werent",
+            "oughtn't", "shan't", "shouldn't", "uh-uh", "wasn't", "weren't",
+            "without", "wont", "wouldnt", "won't", "wouldn't", "rarely", "seldom", "despite"
+    };
         
 
         public static ArrayList PUNCTUATION_LIST = new ArrayList(PUNCTUATION_LIST_array);
+        public static ArrayList NEGATIVE_WORDS = new ArrayList(NEGATIVE_WORDS_array);
 
         public static Dictionary<string, float> BOOSTER_DICTIONARY = new Dictionary<string, float>();
         public static Dictionary<String, float> WORD_VALENCE_DICTIONARY = getWordValenceDictionary("vader_sentiment_lexicon.txt");
