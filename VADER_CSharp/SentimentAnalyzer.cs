@@ -56,27 +56,29 @@ namespace VADER_CSharp
 
         private float checkForNever(float currentValence, int startI, int i, int closeTokenIndex)
         {
-           ArrayList wordsAndEmoticons = inputStringProperties.getWordsAndEmoticons();
- /*
+            ArrayList wordsAndEmoticons = inputStringProperties.getWordsAndEmoticons();
+            ArrayList isNegAL = new ArrayList();
+
+
             if (startI == 0)
             {
-                if (isNegative(new ArrayList(wordsAndEmoticons[i - 1]).ToArray())
+                isNegAL.Add(wordsAndEmoticons[i - 1]);
+                if (isNegative(isNegAL))
                 {
                     currentValence *= Utils.N_SCALAR;
                 }
             }
 
-           
-
             if (startI == 1)
             {
-                String wordAtDistanceTwoLeft = wordsAndEmoticons.get(i - 2);
-                String wordAtDistanceOneLeft = wordsAndEmoticons.get(i - 1);
-                if ((wordAtDistanceTwoLeft.equals("never")) && (wordAtDistanceOneLeft.equals("so") || (wordAtDistanceOneLeft.equals("this"))))
+                String wordAtDistanceTwoLeft = wordsAndEmoticons[i - 2].ToString();
+                String wordAtDistanceOneLeft = wordsAndEmoticons[i - 1].ToString();
+                isNegAL.Add(wordsAndEmoticons[closeTokenIndex]);
+                if ((wordAtDistanceTwoLeft.Equals("never")) && (wordAtDistanceOneLeft.Equals("so") || (wordAtDistanceOneLeft.Equals("this"))))
                 {
                     currentValence *= 1.5f;
                 }
-                else if (isNegative(new ArrayList<>(Collections.singletonList(wordsAndEmoticons.get(closeTokenIndex)))))
+                else if (isNegative(isNegAL))
                 {
                     currentValence *= Utils.N_SCALAR;
                 }
@@ -87,21 +89,37 @@ namespace VADER_CSharp
                 String wordAtDistanceThreeLeft = wordsAndEmoticons[(i - 3)].ToString();
                 String wordAtDistanceTwoLeft = wordsAndEmoticons[(i - 2)].ToString();
                 String wordAtDistanceOneLeft = wordsAndEmoticons[(i - 1)].ToString();
-                if ((wordAtDistanceThreeLeft.equals("never")) &&
-                        (wordAtDistanceTwoLeft.equals("so") || wordAtDistanceTwoLeft.equals("this")) ||
-                        (wordAtDistanceOneLeft.equals("so") || wordAtDistanceOneLeft.equals("this")))
+                isNegAL.Add(wordsAndEmoticons[closeTokenIndex]);
+
+                if ((wordAtDistanceThreeLeft.Equals("never")) &&
+                        (wordAtDistanceTwoLeft.Equals("so") || wordAtDistanceTwoLeft.Equals("this")) ||
+                        (wordAtDistanceOneLeft.Equals("so") || wordAtDistanceOneLeft.Equals("this")))
                 {
                     currentValence *= 1.25f;
                 }
-                else if (isNegative(new ArrayList(Collections.singletonList(wordsAndEmoticons.get(closeTokenIndex)))))
+                else if (isNegative(isNegAL))
                 {
                     currentValence *= Utils.N_SCALAR;
                 }
-            }*/
+            }
 
             return currentValence;
         }
 
+        private float checkForIdioms(float currentValence, int i)
+        {
+
+            ArrayList wordsAndEmoticons = inputStringProperties.getWordsAndEmoticons();
+            String leftBiGramFromCurrent = String.Format("%s %s", wordsAndEmoticons[i - 1], wordsAndEmoticons[i]);
+            String leftTriGramFromCurrent = String.Format("%s %s %s", wordsAndEmoticons[i - 2], wordsAndEmoticons[i - 1], wordsAndEmoticons[i]);
+            String leftBiGramFromOnePrevious = String.Format("%s %s", wordsAndEmoticons[i - 2], wordsAndEmoticons[i - 1]);
+            String leftTriGramFromOnePrevious = String.Format("%s %s %s", wordsAndEmoticons[i - 3], wordsAndEmoticons[i - 2], wordsAndEmoticons[i - 1]);
+            String leftBiGramFromTwoPrevious = String.Format("%s %s", wordsAndEmoticons[i - 3], wordsAndEmoticons[i - 2]);
+
+
+
+            return currentValence;
+        }
         private Dictionary<string, float> getSentiment()
         {
             ArrayList sentiments = new ArrayList();
@@ -156,7 +174,7 @@ namespace VADER_CSharp
                             currentValence = checkForNever(currentValence, startI, i, closeTokenIndex);
 
                             if (startI == 2)
-                                currentValence = 0; //checkForIdioms(currentValence, i);
+                                currentValence = checkForIdioms(currentValence, i);
 
                         }
                         startI++;

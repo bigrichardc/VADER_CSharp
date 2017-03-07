@@ -35,6 +35,7 @@ namespace VADER_CSharp
         public static float DAMPENER_WORD_DECREMENT = -0.293f;
 
         public static float ALL_CAPS_BOOSTER_SCORE = 0.733f;
+        public static float N_SCALAR = -0.74f;
 
         void loadBOOSTER_DICTIONARY()
         {
