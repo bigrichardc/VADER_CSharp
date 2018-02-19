@@ -115,7 +115,7 @@ namespace VADER_CSharp
             return (0 < capDifferential) && (capDifferential < wordsAndEmoticons.Count);
         }
         
-        public Boolean getCapDIff()
+        public Boolean getCapDiff()
         {
             return isCapDIff;
         }

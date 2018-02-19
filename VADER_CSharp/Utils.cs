@@ -30,6 +30,7 @@ namespace VADER_CSharp
         public static ArrayList NEGATIVE_WORDS = new ArrayList(NEGATIVE_WORDS_array);
 
         public static Dictionary<string, float> BOOSTER_DICTIONARY = new Dictionary<string, float>();
+        public static Dictionary<string, float> SENTIMENTLADENIDIOMS_DICTIONARY = new Dictionary<string, float>();
         public static Dictionary<String, float> WORD_VALENCE_DICTIONARY = getWordValenceDictionary("vader_sentiment_lexicon.txt");
         public static float BOOSTER_WORD_INCREMENT = 0.293f;
         public static float DAMPENER_WORD_DECREMENT = -0.293f;
@@ -107,6 +108,18 @@ namespace VADER_CSharp
             BOOSTER_DICTIONARY.Add("effing", BOOSTER_WORD_INCREMENT);
         }
 
+        void loadSENTIMENTLADENIDIOMS_DICTIONARY()
+        {
+            
+            SENTIMENTLADENIDIOMS_DICTIONARY.Add("cut the mustard", 2f);
+            SENTIMENTLADENIDIOMS_DICTIONARY.Add("bad ass", 1.5f);
+            SENTIMENTLADENIDIOMS_DICTIONARY.Add("kiss of death", -1.5f);
+            SENTIMENTLADENIDIOMS_DICTIONARY.Add("yeah right", -2f);
+            SENTIMENTLADENIDIOMS_DICTIONARY.Add("the bomb", 3f);
+            SENTIMENTLADENIDIOMS_DICTIONARY.Add("hand to mouth", -2f);
+            SENTIMENTLADENIDIOMS_DICTIONARY.Add("the shit", 3f);
+        }
+
         public static Dictionary<string, float> getWordValenceDictionary(string filename)
         {
             Dictionary<string, float> lexDictionary = new Dictionary<string, float>();
@@ -129,6 +142,16 @@ namespace VADER_CSharp
                 return lexDictionary;
             }
             catch { return null; }
+        }
+
+        public static Dictionary<string, float> GetBoosterDictionary()
+        {
+            return BOOSTER_DICTIONARY;
+        }
+
+        public static Dictionary<string, float> GetSentimentLadenIdiomsDictionary()
+        {
+            return SENTIMENTLADENIDIOMS_DICTIONARY;
         }
 
         public static Boolean isUpper (String tokenString)

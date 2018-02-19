@@ -13,8 +13,8 @@ namespace UnitTestProject1
             System.Collections.ArrayList al = Utils.NEGATIVE_WORDS;
             System.Collections.ArrayList nl = new System.Collections.ArrayList();
             
-            //SentimentAnalyzer sa =new SentimentAnalyzer("this is a test");
-            //sa.analyse();
+           SentimentAnalyzer sa =new SentimentAnalyzer("this is a test");
+           sa.analyse();
 
         }
     }

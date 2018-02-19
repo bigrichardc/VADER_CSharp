@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,15 +44,10 @@ namespace VADER_CSharp
                 scalar = Utils.BOOSTER_DICTIONARY[precedingWordLower];
                 if (currentValence < 0.0)
                     scalar *= -1;
-                if (Utils.isUpper(precedingWord) && inputStringProperties.getCapDIff())
+                if (Utils.isUpper(precedingWord) && inputStringProperties.getCapDiff())
                     scalar = (currentValence > 0.0) ? scalar + Utils.ALL_CAPS_BOOSTER_SCORE : scalar - Utils.ALL_CAPS_BOOSTER_SCORE;
             }
             return scalar;
-        }
-
-        private int pythonIndexToJavaIndex(int pythonIndex)
-        {
-            return inputStringProperties.getWordsAndEmoticons().Count - Math.Abs(pythonIndex);
         }
 
         private float checkForNever(float currentValence, int startI, int i, int closeTokenIndex)
@@ -73,7 +69,9 @@ namespace VADER_CSharp
             {
                 String wordAtDistanceTwoLeft = wordsAndEmoticons[i - 2].ToString();
                 String wordAtDistanceOneLeft = wordsAndEmoticons[i - 1].ToString();
+
                 isNegAL.Add(wordsAndEmoticons[closeTokenIndex]);
+
                 if ((wordAtDistanceTwoLeft.Equals("never")) && (wordAtDistanceOneLeft.Equals("so") || (wordAtDistanceOneLeft.Equals("this"))))
                 {
                     currentValence *= 1.5f;
@@ -116,6 +114,47 @@ namespace VADER_CSharp
             String leftTriGramFromOnePrevious = String.Format("%s %s %s", wordsAndEmoticons[i - 3], wordsAndEmoticons[i - 2], wordsAndEmoticons[i - 1]);
             String leftBiGramFromTwoPrevious = String.Format("%s %s", wordsAndEmoticons[i - 3], wordsAndEmoticons[i - 2]);
 
+            Dictionary< string, float > boosterDictionary = Utils.GetBoosterDictionary();
+            Dictionary < string, float > sentimentLadenIdioms = Utils.GetSentimentLadenIdiomsDictionary();
+
+            ArrayList leftGramSequences = new ArrayList();
+
+            leftGramSequences.Add(leftBiGramFromCurrent);
+            leftGramSequences.Add(leftTriGramFromCurrent);
+            leftGramSequences.Add(leftBiGramFromOnePrevious);
+            leftGramSequences.Add(leftTriGramFromOnePrevious);
+            leftGramSequences.Add(leftBiGramFromTwoPrevious);
+
+            foreach (String leftGramSequence in leftGramSequences)
+            {
+                if (sentimentLadenIdioms.ContainsKey(leftGramSequence))
+                {
+                    currentValence = sentimentLadenIdioms[leftGramSequence];
+                    break;
+                }
+            }
+
+            if (wordsAndEmoticons.Count - 1 > i)
+            {
+                String rightBiGramFromCurrent = String.Format("%s %s", wordsAndEmoticons[i], wordsAndEmoticons[i + 1]);
+                if (sentimentLadenIdioms.containsKey(rightBiGramFromCurrent))
+                {
+                    currentValence = sentimentLadenIdioms.get(rightBiGramFromCurrent);
+                }
+            }
+            if (wordsAndEmoticons.size() - 1 > i + 1)
+            {
+                final String rightTriGramFromCurrent = String.format("%s %s %s", wordsAndEmoticons.get(i), wordsAndEmoticons.get(i + 1), wordsAndEmoticons.get(i + 2));
+                if (sentimentLadenIdioms.containsKey(rightTriGramFromCurrent))
+                {
+                    currentValence = sentimentLadenIdioms.get(rightTriGramFromCurrent);
+                }
+            }
+
+            if (boosterDictionary.containsKey(leftBiGramFromTwoPrevious) || boosterDictionary.containsKey(leftBiGramFromOnePrevious))
+            {
+                currentValence += -0.293f; // TODO review Language and English.DAMPENER_WORD_DECREMENT;
+            }
 
 
             return currentValence;
@@ -128,56 +167,56 @@ namespace VADER_CSharp
             foreach (String item in wordsAndEmoticons)
             {
                 float currentValence = 0.0f;
-                int i = wordsAndEmoticons.IndexOf(item);
+                int currentItemIndexOf = wordsAndEmoticons.IndexOf(item);
+                String currentItemLower = item.ToLower();
 
-                if (i < wordsAndEmoticons.Count - 1 &&
+                if (currentItemIndexOf < wordsAndEmoticons.Count - 1 &&
                         item.ToLower().Equals("kind") &&
-                        wordsAndEmoticons[i + 1].ToString().ToLower().Equals("of") ||
+                        wordsAndEmoticons[currentItemIndexOf + 1].ToString().ToLower().Equals("of") ||
                         Utils.BOOSTER_DICTIONARY.ContainsKey(item.ToLower()))
                 {
                     sentiments.Add(currentValence);
                     continue;
                 }
-
-                String currentItemLower = item.ToLower();
+                
                 if (Utils.WORD_VALENCE_DICTIONARY.ContainsKey(currentItemLower))
                 {
                     currentValence = Utils.WORD_VALENCE_DICTIONARY[currentItemLower];
 
-                    if (Utils.isUpper(item) && inputStringProperties.getCapDIff())
+                    if (Utils.isUpper(item) && inputStringProperties.getCapDiff())
                     {
                         currentValence = (currentValence > 0.0) ? currentValence + Utils.ALL_CAPS_BOOSTER_SCORE : currentValence - Utils.ALL_CAPS_BOOSTER_SCORE;
                     }
 
 
-                    int startI = 0;
+                    int distance = 0;
                     float gramBasedValence = 0.0f;
-                    while (startI < 3)
+                    while (distance < 3)
                     {
 
-                        int closeTokenIndex = i - (startI + 1);
+                        int closeTokenIndex = currentItemIndexOf - (distance + 1);
                         if (closeTokenIndex < 0)
                         {
-                            closeTokenIndex = pythonIndexToJavaIndex(closeTokenIndex);
+                            closeTokenIndex = inputStringProperties.getWordsAndEmoticons().Count;
                         }
 
-                        if ((i > startI) && !Utils.WORD_VALENCE_DICTIONARY.ContainsKey(wordsAndEmoticons[closeTokenIndex].ToString().ToLower()))
+                        if ((currentItemIndexOf > distance) && !Utils.WORD_VALENCE_DICTIONARY.ContainsKey(wordsAndEmoticons[closeTokenIndex].ToString().ToLower()))
                         {
                             gramBasedValence = valenceModifier(wordsAndEmoticons[closeTokenIndex].ToString(), currentValence);
-                            if (startI == 1 && gramBasedValence != 0.0f)
+                            if (distance == 1 && gramBasedValence != 0.0f)
                                 gramBasedValence *= 0.95f;
-                            if (startI == 2 && gramBasedValence != 0.0f)
+                            if (distance == 2 && gramBasedValence != 0.0f)
                                 gramBasedValence *= 0.9f;
 
                             currentValence += gramBasedValence;
 
-                            currentValence = checkForNever(currentValence, startI, i, closeTokenIndex);
+                            currentValence = checkForNever(currentValence, distance, currentItemIndexOf, closeTokenIndex);
 
-                            if (startI == 2)
-                                currentValence = checkForIdioms(currentValence, i);
+                            if (distance == 2)
+                                currentValence = checkForIdioms(currentValence, currentItemIndexOf);
 
                         }
-                        startI++;
+                        distance++;
                     }
                 }
             }
