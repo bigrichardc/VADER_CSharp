@@ -14,6 +14,18 @@ namespace VADER_CSharp
         private ArrayList wordsOnly;
         private bool isCapDIff;
 
+        public static int countLetter(String s, String l)
+        {
+            int numberOfLetters = 0;
+            int positionOfLetter = s.IndexOf(l);
+            while (positionOfLetter != -1)
+            {
+                numberOfLetters++;
+                positionOfLetter = s.IndexOf(l, positionOfLetter + 1);
+            }
+            return numberOfLetters;
+        }
+
         private void setWordsAndEmoticons()
         {
             setWordsOnly();
@@ -83,6 +95,7 @@ namespace VADER_CSharp
         {
             this.inputText = inputText;
             setWordsAndEmoticons();
+            setAllCapDifferential();
         }
         
         private void setWordsOnly()
@@ -90,9 +103,14 @@ namespace VADER_CSharp
             this.wordsOnly = VaderLuceneAnalyzer.removePunctuation(inputText);
         }
 
-        private void setCapDIff(bool capDIff)
+        private void setCapDiff(bool capDIff)
         {
             isCapDIff = capDIff;
+        }
+
+        public bool isCapDifferential()
+        {
+            return isCapDIff;
         }
 
         public ArrayList getWordsAndEmoticons()
@@ -105,11 +123,11 @@ namespace VADER_CSharp
             return wordsOnly;
         }
 
-        private bool isAllCapDifferential()
+        private bool setAllCapDifferential()
         {
             int countAllCaps = 0;
             foreach (String s in wordsAndEmoticons)
-                if (Utils.isUpper(s))
+                if (Utils.IsUpper(s))
                     countAllCaps += 1;
             int capDifferential = wordsAndEmoticons.Count - countAllCaps;
             return (0 < capDifferential) && (capDifferential < wordsAndEmoticons.Count);

@@ -17,5 +17,12 @@ namespace UnitTestProject1
            sa.analyse();
 
         }
+
+        [TestMethod]
+        public void LoadValenceDictionary()
+        {
+            var valenceDictionary = Utils.GetWordValenceDictionary();
+            Assert.IsNotNull(valenceDictionary);
+        }
     }
 }

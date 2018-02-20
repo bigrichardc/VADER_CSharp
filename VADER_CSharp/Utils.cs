@@ -24,19 +24,26 @@ namespace VADER_CSharp
             "oughtn't", "shan't", "shouldn't", "uh-uh", "wasn't", "weren't",
             "without", "wont", "wouldnt", "won't", "wouldn't", "rarely", "seldom", "despite"
     };
-        
+
+
+        private static string LEXICON_FILE = "vader_lexicon_english.txt";
 
         public static ArrayList PUNCTUATION_LIST = new ArrayList(PUNCTUATION_LIST_array);
         public static ArrayList NEGATIVE_WORDS = new ArrayList(NEGATIVE_WORDS_array);
 
         public static Dictionary<string, float> BOOSTER_DICTIONARY = new Dictionary<string, float>();
         public static Dictionary<string, float> SENTIMENTLADENIDIOMS_DICTIONARY = new Dictionary<string, float>();
-        public static Dictionary<String, float> WORD_VALENCE_DICTIONARY = getWordValenceDictionary("vader_sentiment_lexicon.txt");
+        public static Dictionary<String, float> WORD_VALENCE_DICTIONARY = GetWordValenceDictionary(LEXICON_FILE);
         public static float BOOSTER_WORD_INCREMENT = 0.293f;
         public static float DAMPENER_WORD_DECREMENT = -0.293f;
 
+        public static float NORMALIZE_SCORE_ALPHA_DEFAULT = 15.0f;
         public static float ALL_CAPS_BOOSTER_SCORE = 0.733f;
         public static float N_SCALAR = -0.74f;
+        public static float EXCLAMATION_BOOST = 0.292f;
+        public static float QUESTION_BOOST_COUNT_3 = 0.18f;
+        public static float QUESTION_BOOST = 0.96f;
+
 
         void loadBOOSTER_DICTIONARY()
         {
@@ -120,7 +127,12 @@ namespace VADER_CSharp
             SENTIMENTLADENIDIOMS_DICTIONARY.Add("the shit", 3f);
         }
 
-        public static Dictionary<string, float> getWordValenceDictionary(string filename)
+        public static Dictionary<string, float> GetWordValenceDictionary()
+        {
+            return GetWordValenceDictionary(LEXICON_FILE);
+        }
+
+        public static Dictionary<string, float> GetWordValenceDictionary(string filename)
         {
             Dictionary<string, float> lexDictionary = new Dictionary<string, float>();
             StreamReader file = new StreamReader(filename);
@@ -130,7 +142,7 @@ namespace VADER_CSharp
             try
             {
                 while ((line = file.ReadLine()) != null)
-                {   
+                {
                     String[] lexFileData = line.Split('\t');
                     currentText = lexFileData[0];
                     currentTextValence = float.Parse(lexFileData[1]);
@@ -141,7 +153,10 @@ namespace VADER_CSharp
                 file.Close();
                 return lexDictionary;
             }
-            catch { return null; }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         public static Dictionary<string, float> GetBoosterDictionary()
@@ -154,16 +169,25 @@ namespace VADER_CSharp
             return SENTIMENTLADENIDIOMS_DICTIONARY;
         }
 
-        public static Boolean isUpper (String tokenString)
+        public static Boolean IsUpper (String tokenString)
         {
             if (tokenString.StartsWith("http://"))
             {
                 return false;
             }
+            Regex rgx = new Regex(".*[a-zA-Z]+.*");
 
-            Boolean result = !tokenString.Any(c => char.IsLower(c));
-            return result;
+            if (rgx.IsMatch(tokenString))
+            {
+                return false;
+            }
 
+            if (tokenString.Any(c => char.IsLower(c)) == false)
+            {
+                return false;
+
+            }
+            return true;
         }
 
 
